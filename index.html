@@ -12,15 +12,19 @@
   <script>
     require(["esri/map", 
       "esri/dijit/Geocoder", 
-      "esri/InfoTemplate", 
+      "esri/InfoTemplate",
+      "esri/layers/FeatureLayer", 
       "esri/graphic", 
-      "esri/geometry/Multipoint", 
+      "esri/geometry/Multipoint",
+      "esri/symbols/TextSymbol",
+      "esri/renderers/SimpleRenderer",
+      "esri/layers/LabelLayer",
       "./js/utils.js", 
       "./js/bootstrapmap.js",
       "dojo/dom", 
       "dojo/on", 
       "dojo/domReady!"], 
-      function(Map, Geocoder, InfoTemplate, Graphic, Multipoint, utils, BootstrapMap, dom, on) {             
+      function(Map, Geocoder, InfoTemplate, FeatureLayer, Graphic, Multipoint, TextSymbol, SimpleRenderer, LabelLayer, utils, BootstrapMap, dom, on) {             
         "use strict"
         
         // Create map
@@ -29,6 +33,33 @@
           center: [-120.54, 46.59],
           zoom: 13
         });
+        
+        var labelField = "District";
+        //council districts
+        var districts = new FeatureLayer("http://gis.yakimawa.gov/arcgis101/rest/services/General/YakimaLayers/MapServer/11",{
+          outFields: ["District"],
+          opacity:.60
+        });
+        map.addLayer(districts);
+        
+        // create a text symbol to define the style of labels
+        var districtLabel = new TextSymbol().setColor("#555");
+        districtLabel.font.setSize("250%");
+        districtLabel.font.setFamily("arial");
+        var districtLabelRenderer = new SimpleRenderer(districtLabel);
+        
+        var labels = new LabelLayer({ id: "labels" });
+        // tell the label layer to label the countries feature layer 
+        // using the field named "admin"
+        labels.addFeatureLayer(districts, districtLabelRenderer, "${" + labelField + "}");
+        // add the label layer to the map
+        map.addLayer(labels);
+        
+        //city limits
+        var cityLimits = new FeatureLayer("http://gis.yakimawa.gov/arcgis101/rest/services/General/YakimaLayers/MapServer/9",{
+          outFields: ["*"]
+        });
+        map.addLayer(cityLimits);
 
         utils.setPopup(map, "top", -1, 26);
         utils.autoRecenter(map);
