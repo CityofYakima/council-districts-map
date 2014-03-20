@@ -36,7 +36,7 @@
         
         var labelField = "District";
         //council districts
-        var districts = new FeatureLayer("http://gis.yakimawa.gov/arcgis101/rest/services/General/YakimaLayers/MapServer/11",{
+        var districts = new FeatureLayer("https://gis.yakimawa.gov/arcgis101/rest/services/General/YakimaLayers/MapServer/11",{
           outFields: ["District"],
           opacity:.60
         });
@@ -56,7 +56,7 @@
         map.addLayer(labels);
         
         //city limits
-        var cityLimits = new FeatureLayer("http://gis.yakimawa.gov/arcgis101/rest/services/General/YakimaLayers/MapServer/9",{
+        var cityLimits = new FeatureLayer("https://gis.yakimawa.gov/arcgis101/rest/services/General/YakimaLayers/MapServer/9",{
           outFields: ["*"]
         });
         map.addLayer(cityLimits);
@@ -67,11 +67,17 @@
         var sym = utils.createPictureSymbol("./images/blue-pin.png", 0, 12, 13, 24);
         
         // Create widget
+        var locatorUrl = "https://gis.yakimawa.gov/arcgis101/rest/services/Geocode/Composite/GeocodeServer";
+        var myGeocoders = [{
+          url: locatorUrl,
+          name: "YakimaGeocoder"
+        }];
         var geocoder = new Geocoder({
           autoNavigate: false,
           maxLocations: 25,
           autoComplete: true,
-          arcgisGeocoder: true,
+          arcgisGeocoder: false,
+          geocoders: myGeocoders,
           map: map
         },"search");        
         geocoder.startup();
