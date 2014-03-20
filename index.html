@@ -20,6 +20,12 @@
       left: 20px;
       z-index: 50;
     }
+    #searchForm {
+      position: absolute;
+      top: 20px;
+      left: 60px;
+      z-index: 50;
+    }
   </style>
   <script>
     require(["esri/map", 
@@ -31,12 +37,13 @@
       "esri/symbols/TextSymbol",
       "esri/renderers/SimpleRenderer",
       "esri/layers/LabelLayer",
+      "esri/dijit/HomeButton",
       "./js/utils.js", 
       "./js/bootstrapmap.js",
       "dojo/dom", 
       "dojo/on", 
       "dojo/domReady!"], 
-      function(Map, Geocoder, InfoTemplate, FeatureLayer, Graphic, Multipoint, TextSymbol, SimpleRenderer, LabelLayer, utils, BootstrapMap, dom, on) {             
+      function(Map, Geocoder, InfoTemplate, FeatureLayer, Graphic, Multipoint, TextSymbol, SimpleRenderer, LabelLayer, HomeButton, utils, BootstrapMap, dom, on) {             
         "use strict"
         
         // Create map
@@ -45,6 +52,12 @@
           center: [-120.54, 46.59],
           zoom: 13
         });
+        
+        //Home Button
+        var home = new HomeButton({
+          map: map
+        }, "HomeButton");
+        home.startup();
         
         var labelField = "District";
         //council districts
@@ -169,7 +182,7 @@
   </script>
 </head>
 <body>
-  <div class="panel">
+  <div class="panel" id="searchForm">
     <div class="titlearea"><span id="titleMessage" class="title-message">Find Places Widget</span></div>
     <div class="controls">
       <div class="buttons">       
@@ -183,6 +196,8 @@
     </div>
   </div>
   <div id="progress" class="progress hidden"></div>
-  <div id="mapDiv"></div>  
+  <div id="mapDiv">
+    <div id="HomeButton"></div>
+  </div>  
 </body>
 </html>
