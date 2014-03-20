@@ -26,6 +26,12 @@
       left: 60px;
       z-index: 50;
     }
+    #LocateButton {
+      position: absolute;
+      top: 135px;
+      left: 20px;
+      z-index: 50;
+    }
   </style>
   <script>
     require(["esri/map", 
@@ -38,12 +44,13 @@
       "esri/renderers/SimpleRenderer",
       "esri/layers/LabelLayer",
       "esri/dijit/HomeButton",
+      "esri/dijit/LocateButton",
       "./js/utils.js", 
       "./js/bootstrapmap.js",
       "dojo/dom", 
       "dojo/on", 
       "dojo/domReady!"], 
-      function(Map, Geocoder, InfoTemplate, FeatureLayer, Graphic, Multipoint, TextSymbol, SimpleRenderer, LabelLayer, HomeButton, utils, BootstrapMap, dom, on) {             
+      function(Map, Geocoder, InfoTemplate, FeatureLayer, Graphic, Multipoint, TextSymbol, SimpleRenderer, LabelLayer, HomeButton, LocateButton, utils, BootstrapMap, dom, on) {             
         "use strict"
         
         // Create map
@@ -59,6 +66,9 @@
         }, "HomeButton");
         home.startup();
         
+        
+        
+        //add layers to map
         var labelField = "District";
         //council districts
         var districts = new FeatureLayer("https://gis.yakimawa.gov/arcgis101/rest/services/General/YakimaLayers/MapServer/11",{
@@ -90,6 +100,12 @@
         utils.autoRecenter(map);
 
         var sym = utils.createPictureSymbol("./images/blue-pin.png", 0, 12, 13, 24);
+        
+        //Locate Button
+        var geoLocate = new LocateButton({
+          map: map
+        }, "LocateButton");
+        geoLocate.startup();
         
         // Create widget
         var locatorUrl = "https://gis.yakimawa.gov/arcgis101/rest/services/Geocode/Composite/GeocodeServer";
@@ -198,6 +214,7 @@
   <div id="progress" class="progress hidden"></div>
   <div id="mapDiv">
     <div id="HomeButton"></div>
+    <div id="LocateButton"></div>
   </div>  
 </body>
 </html>
