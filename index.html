@@ -9,30 +9,7 @@
   <!-- Load the library references for ArcGIS API for JavaScript -->
   <script src="http://js.arcgis.com/3.8compact"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
-  <style>
-    html, body, #map {
-      padding:0;
-      margin:0;
-    }
-    #HomeButton {
-      position: absolute;
-      top: 95px;
-      left: 20px;
-      z-index: 50;
-    }
-    #searchForm {
-      position: absolute;
-      top: 20px;
-      left: 60px;
-      z-index: 50;
-    }
-    #LocateButton {
-      position: absolute;
-      top: 135px;
-      left: 20px;
-      z-index: 50;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="css/style.css"> 
   <script>
     require(["esri/map", 
       "esri/dijit/Geocoder", 
@@ -69,7 +46,7 @@
         
         
         //add layers to map
-        var labelField = "District";
+
         //council districts
         var districts = new FeatureLayer("https://gis.yakimawa.gov/arcgis101/rest/services/General/YakimaLayers/MapServer/11",{
           outFields: ["District"],
@@ -84,9 +61,9 @@
         var districtLabelRenderer = new SimpleRenderer(districtLabel);
         
         var labels = new LabelLayer({ id: "labels" });
-        // tell the label layer to label the countries feature layer 
-        // using the field named "admin"
-        labels.addFeatureLayer(districts, districtLabelRenderer, "${" + labelField + "}");
+        // tell the label layer to label the feature layer 
+        // using the field named "district"
+        labels.addFeatureLayer(districts, districtLabelRenderer, "${" + "District" + "}");
         // add the label layer to the map
         map.addLayer(labels);
         
@@ -111,13 +88,18 @@
         var locatorUrl = "https://gis.yakimawa.gov/arcgis101/rest/services/Geocode/Composite/GeocodeServer";
         var myGeocoders = [{
           url: locatorUrl,
-          name: "YakimaGeocoder"
+          name: "Yakima Geocoder"
         }];
+        var initExtent = new esri.geometry.Extent({"xmin":-13433193,"ymin":5867988,"xmax":-13409264,"ymax":5881438,"spatialReference":{"wkid":102100}});
         var geocoder = new Geocoder({
           autoNavigate: false,
           maxLocations: 25,
           autoComplete: true,
-          arcgisGeocoder: false,
+          arcgisGeocoder:  {
+            placeholder: "Find Your Address",
+            searchExtent: initExtent,
+            sourceCountry: "USA"
+          },
           geocoders: myGeocoders,
           map: map
         },"search");        
@@ -199,7 +181,7 @@
 </head>
 <body>
   <div class="panel" id="searchForm">
-    <div class="titlearea"><span id="titleMessage" class="title-message">Find Places Widget</span></div>
+    <div class="titlearea"><span id="titleMessage" class="title-message">Find Your Address</span></div>
     <div class="controls">
       <div class="buttons">       
         <span class="controls-inner">
