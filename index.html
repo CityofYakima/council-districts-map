@@ -14,7 +14,9 @@
     require(["esri/map", 
       "esri/dijit/Geocoder", 
       "esri/InfoTemplate",
-      "esri/layers/FeatureLayer", 
+      "esri/layers/FeatureLayer",
+      "esri/layers/ArcGISDynamicMapServiceLayer",
+      "esri/layers/ImageParameters",
       "esri/graphic", 
       "esri/geometry/Multipoint",
       "esri/symbols/TextSymbol",
@@ -27,7 +29,7 @@
       "dojo/dom", 
       "dojo/on", 
       "dojo/domReady!"], 
-      function(Map, Geocoder, InfoTemplate, FeatureLayer, Graphic, Multipoint, TextSymbol, SimpleRenderer, LabelLayer, HomeButton, LocateButton, utils, BootstrapMap, dom, on) {             
+      function(Map, Geocoder, InfoTemplate, FeatureLayer, ArcGISDynamicMapServiceLayer, ImageParameters, Graphic, Multipoint, TextSymbol, SimpleRenderer, LabelLayer, HomeButton, LocateButton, utils, BootstrapMap, dom, on) {             
         "use strict"
         
         // Create map
@@ -46,27 +48,29 @@
         
         
         //add layers to map
+        //Use the ImageParameters to set map service layer definitions and map service visible layers before adding to the client map.
+        var imageParameters = new ImageParameters();
 
-        //council districts
-        var districts = new FeatureLayer("https://gis.yakimawa.gov/arcgis101/rest/services/General/YakimaLayers/MapServer/11",{
-          outFields: ["District"],
-          opacity:.60
+        //layer.setLayerDefinitions takes an array.  The index of the array corresponds to the layer id.
+        //Those array elements correspond to the layer id within the remote ArcGISDynamicMapServiceLayer
+        var layerDefs = [];
+        layerDefs[11] = "District > 0";
+        imageParameters.layerDefinitions = layerDefs;
+
+        //11 is the council layer
+        imageParameters.layerIds = [11];
+
+        imageParameters.layerOption = ImageParameters.LAYER_OPTION_SHOW;
+        imageParameters.transparent = true;
+
+        //construct ArcGISDynamicMapServiceLayer with imageParameters from above
+        var districts = new ArcGISDynamicMapServiceLayer("https://gis.yakimawa.gov/arcgis101/rest/services/General/YakimaLayers/MapServer",{
+          "imageParameters": imageParameters,
+          opacity:.5
         });
+
         map.addLayer(districts);
-        
-        // create a text symbol to define the style of labels
-        var districtLabel = new TextSymbol().setColor("#555");
-        districtLabel.font.setSize("250%");
-        districtLabel.font.setFamily("arial");
-        var districtLabelRenderer = new SimpleRenderer(districtLabel);
-        
-        var labels = new LabelLayer({ id: "labels" });
-        // tell the label layer to label the feature layer 
-        // using the field named "district"
-        labels.addFeatureLayer(districts, districtLabelRenderer, "${" + "District" + "}");
-        // add the label layer to the map
-        map.addLayer(labels);
-        
+
         //city limits
         var cityLimits = new FeatureLayer("https://gis.yakimawa.gov/arcgis101/rest/services/General/YakimaLayers/MapServer/9",{
           outFields: ["*"]
@@ -123,6 +127,7 @@
         }
         
         function geocodeResults(places) {
+          console.log(places);
           // Translate features to places...
           places = places.results;
           if (places.length > 0) {
