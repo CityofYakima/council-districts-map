@@ -9,6 +9,19 @@
   <!-- Load the library references for ArcGIS API for JavaScript -->
   <script src="http://js.arcgis.com/3.8compact"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
+  <style>
+    html, body, #map {
+      padding:0;
+      margin:0;
+      height:100%;
+    }
+    #HomeButton {
+      position: absolute;
+      top: 95px;
+      left: 20px;
+      z-index: 50;
+    }
+  </style>
   <script>
     require(["esri/map", 
       "esri/dijit/Geocoder", 
