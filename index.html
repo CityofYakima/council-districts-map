@@ -103,7 +103,7 @@
         var geocoder = new Geocoder({
           autoNavigate: false,
           maxLocations: 25,
-          autoComplete: true,
+          autoComplete: false,
           arcgisGeocoder: false,
           geocoders: myGeocoders,
           map: map
@@ -112,7 +112,7 @@
 
         // Wire events
         on(map, "load", function() {
-          geocoder.on("select", geocodeSelect);
+          geocoder.on("select", geosearch);
           geocoder.on("findResults", geocodeResults);
           geocoder.on("clear", clearFindGraphics);
           // Wire UI events
@@ -130,17 +130,25 @@
         function geocodeResults(places) {
           // Translate features to places...
           places = places.results;
-          console.log(places);
           if (places.length > 0) {
             clearFindGraphics();
             // Objects for the graphic
             var symbol = sym;
+            var goodResults = new Array;
             // Create and add graphics with pop-ups
             for (var i = 0; i < places.length; i++) {
-              addPlaceGraphic(places[i], symbol);
+              if(places[i].feature.attributes.Score >= 80){
+                addPlaceGraphic(places[i], symbol);
+                goodResults.push(places[i]);
+              }
             }
-            // Zoom to results
-            zoomToPlaces(places);
+            if(goodResults.length > 0) {
+              // Zoom to results
+              zoomToPlaces(goodResults);
+            }else {
+              alert("Sorry, address or place not found.");
+            }
+
           } else {
             alert("Sorry, address or place not found.");
           }
@@ -170,12 +178,20 @@
         }
                   
         function zoomToPlaces(places) {
-          var multiPoint = new Multipoint(map.spatialReference);
-          for (var i = 0; i < places.length; i++) {
-            //multiPoint.addPoint(places[i].location);
-            multiPoint.addPoint(places[i].feature.geometry);
+          //console.log(places);
+          if(places.length > 1){
+            var multiPoint = new Multipoint(map.spatialReference);
+            for (var i = 0; i < places.length; i++) {
+              //multiPoint.addPoint(places[i].location);
+              multiPoint.addPoint(places[i].feature.geometry);
+            }
+            map.setExtent(multiPoint.getExtent().expand(2.0));
+          }else{
+            var pt = places[0].feature.geometry;
+
+            console.log(pt);
+            map.centerAndZoom(pt, 18);
           }
-          map.setExtent(multiPoint.getExtent().expand(2.0));
         }
 
         function clearFindGraphics() {
