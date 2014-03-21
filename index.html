@@ -68,10 +68,9 @@
           "imageParameters": imageParameters,
           opacity:.5
         });
-
         map.addLayer(districts);
-
-        //city limits
+        
+        //add city limits
         var cityLimits = new FeatureLayer("https://gis.yakimawa.gov/arcgis101/rest/services/General/YakimaLayers/MapServer/9",{
           outFields: ["*"]
         });
@@ -188,8 +187,6 @@
             map.setExtent(multiPoint.getExtent().expand(2.0));
           }else{
             var pt = places[0].feature.geometry;
-
-            console.log(pt);
             map.centerAndZoom(pt, 18);
           }
         }
