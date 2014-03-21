@@ -88,22 +88,23 @@
         }, "LocateButton");
         geoLocate.startup();
         
-        // Create widget
+        // Create Geocoder widget
+        var initExtent = new esri.geometry.Extent({"xmin":-13433193,"ymin":5867988,"xmax":-13409264,"ymax":5881438,"spatialReference":{"wkid":102100}});
         var locatorUrl = "https://gis.yakimawa.gov/arcgis101/rest/services/Geocode/Composite/GeocodeServer";
         var myGeocoders = [{
           url: locatorUrl,
-          name: "Yakima Geocoder"
+          name: "Yakima Geocoder",
+          singleLineFieldName: "Street",
+          placeholder: "Find An Address",
+          searchExtent: initExtent,
+  		    outFields: ["*"]
         }];
-        var initExtent = new esri.geometry.Extent({"xmin":-13433193,"ymin":5867988,"xmax":-13409264,"ymax":5881438,"spatialReference":{"wkid":102100}});
+        
         var geocoder = new Geocoder({
           autoNavigate: false,
           maxLocations: 25,
           autoComplete: true,
-          arcgisGeocoder:  {
-            placeholder: "Find Your Address",
-            searchExtent: initExtent,
-            sourceCountry: "USA"
-          },
+          arcgisGeocoder: false,
           geocoders: myGeocoders,
           map: map
         },"search");        
@@ -127,9 +128,9 @@
         }
         
         function geocodeResults(places) {
-          console.log(places);
           // Translate features to places...
           places = places.results;
+          console.log(places);
           if (places.length > 0) {
             clearFindGraphics();
             // Objects for the graphic
@@ -158,10 +159,11 @@
           var attributes,infoTemplate,pt,graphic;
           pt = item.feature.geometry;
           place.address = item.name;
-          place.score = item.feature.attributes.Score;
+
+          place.score = item.feature.attributes.score;
           // Graphic components
           attributes = { address:place.address, score:place.score, lat:pt.getLatitude().toFixed(2), lon:pt.getLongitude().toFixed(2) };   
-          infoTemplate = new InfoTemplate("Geocode Result","${address}<br/>Latitude: ${lat}<br/>Longitude: ${lon}<br/>Score: ${score}");
+          infoTemplate = new InfoTemplate("Search Result","${address}<br/>Latitude: ${lat}<br/>Longitude: ${lon}<br/>Score: ${score}");//clean me
           graphic = new Graphic(pt,symbol,attributes,infoTemplate);
           // Add to map
           map.graphics.add(graphic);  
