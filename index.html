@@ -159,11 +159,17 @@
             // Objects for the graphic
             var symbol = sym;
             var goodResults = new Array;
+            
             // Create and add graphics with pop-ups
             for (var i = 0; i < places.length; i++) {
+              var pt = places[i].feature.geometry;
+              //var isYakima = cityLimits.graphics[0].geometry.contains(pt);
               if(places[i].feature.attributes.Score >= 80){
-                addPlaceGraphic(places[i], symbol);
-                goodResults.push(places[i]);
+                var isYakima = cityLimits.graphics[0].geometry.contains(pt);
+                if(isYakima){
+                  addPlaceGraphic(places[i], symbol);
+                  goodResults.push(places[i]);
+                }
               }
             }
             if(goodResults.length > 0) {
