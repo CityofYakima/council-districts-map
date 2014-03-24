@@ -19,7 +19,8 @@
       "esri/layers/ImageParameters",
       "esri/graphic", 
       "esri/geometry/Multipoint",
-
+      "esri/tasks/IdentifyTask",
+      "esri/tasks/IdentifyParameters",
       "esri/dijit/HomeButton",
       "esri/dijit/LocateButton",
       "./js/utils.js", 
@@ -27,7 +28,24 @@
       "dojo/dom", 
       "dojo/on", 
       "dojo/domReady!"], 
-      function(Map, Geocoder, InfoTemplate, FeatureLayer, ArcGISDynamicMapServiceLayer, ImageParameters, Graphic, Multipoint, HomeButton, LocateButton, utils, BootstrapMap, dom, on) {             
+      function(
+        Map, 
+        Geocoder, 
+        InfoTemplate, 
+        FeatureLayer, 
+        ArcGISDynamicMapServiceLayer, 
+        ImageParameters, 
+        Graphic,  
+        Multipoint, 
+        IdentifyTask, 
+        IdentifyParameters, 
+        HomeButton, 
+        LocateButton, 
+        utils, 
+        BootstrapMap, 
+        dom, 
+        on
+      ) {             
         "use strict"
         
         // Create map
@@ -42,8 +60,6 @@
           map: map
         }, "HomeButton");
         home.startup();
-        
-        
         
         //add layers to map
         //Use the ImageParameters to set map service layer definitions and map service visible layers before adding to the client map.
@@ -67,6 +83,17 @@
           opacity:.5
         });
         map.addLayer(districts);
+        
+        //prep for identify
+        var identifyTask = new IdentifyTask("https://gis.yakimawa.gov/arcgis101/rest/services/General/YakimaLayers/MapServer");
+        
+        var identifyParams = new IdentifyParameters();
+        identifyParams.tolerance = 3;
+        identifyParams.returnGeometry = true;
+        identifyParams.layerIds = [11];
+        identifyParams.layerOption = IdentifyParameters.LAYER_OPTION_ALL;
+        identifyParams.width = map.width;
+        identifyParams.height = map.height;
 
         //add city limits
         var cityLimits = new FeatureLayer("https://gis.yakimawa.gov/arcgis101/rest/services/General/YakimaLayers/MapServer/9",{
