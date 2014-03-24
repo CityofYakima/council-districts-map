@@ -190,15 +190,22 @@
           var place = {};
           var attributes,infoTemplate,pt,graphic;
           pt = item.feature.geometry;
-          place.address = item.name;
+          //
+          identifyParams.geometry = pt;
+          identifyParams.mapExtent = map.extent;
+          var idResults;
+          identifyTask.execute(identifyParams, function (idResults) {
+            place.district = idResults[0].value;
+            place.address = item.name;
 
-          place.score = item.feature.attributes.score;
-          // Graphic components
-          attributes = { address:place.address, score:place.score, lat:pt.getLatitude().toFixed(2), lon:pt.getLongitude().toFixed(2) };   
-          infoTemplate = new InfoTemplate("Search Result","${address}<br/>Latitude: ${lat}<br/>Longitude: ${lon}<br/>Score: ${score}");//clean me
-          graphic = new Graphic(pt,symbol,attributes,infoTemplate);
-          // Add to map
-          map.graphics.add(graphic);  
+            place.score = item.feature.attributes.score;
+            // Graphic components
+            attributes = { address:place.address, district:place.district };   
+            infoTemplate = new InfoTemplate("Search Result","<strong>Address</strong>: ${address}<br/><strong>Council District</strong>: ${district}");//clean me
+            graphic = new Graphic(pt,symbol,attributes,infoTemplate);
+            // Add to map
+            map.graphics.add(graphic); 
+          });           
         }
                   
         function zoomToPlaces(places) {
