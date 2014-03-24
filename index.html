@@ -19,9 +19,7 @@
       "esri/layers/ImageParameters",
       "esri/graphic", 
       "esri/geometry/Multipoint",
-      "esri/symbols/TextSymbol",
-      "esri/renderers/SimpleRenderer",
-      "esri/layers/LabelLayer",
+
       "esri/dijit/HomeButton",
       "esri/dijit/LocateButton",
       "./js/utils.js", 
@@ -29,7 +27,7 @@
       "dojo/dom", 
       "dojo/on", 
       "dojo/domReady!"], 
-      function(Map, Geocoder, InfoTemplate, FeatureLayer, ArcGISDynamicMapServiceLayer, ImageParameters, Graphic, Multipoint, TextSymbol, SimpleRenderer, LabelLayer, HomeButton, LocateButton, utils, BootstrapMap, dom, on) {             
+      function(Map, Geocoder, InfoTemplate, FeatureLayer, ArcGISDynamicMapServiceLayer, ImageParameters, Graphic, Multipoint, HomeButton, LocateButton, utils, BootstrapMap, dom, on) {             
         "use strict"
         
         // Create map
@@ -53,7 +51,7 @@
 
         //layer.setLayerDefinitions takes an array.  The index of the array corresponds to the layer id.
         //Those array elements correspond to the layer id within the remote ArcGISDynamicMapServiceLayer
-        var layerDefs = [];
+       var layerDefs = [];
         layerDefs[11] = "District > 0";
         imageParameters.layerDefinitions = layerDefs;
 
@@ -69,7 +67,7 @@
           opacity:.5
         });
         map.addLayer(districts);
-        
+
         //add city limits
         var cityLimits = new FeatureLayer("https://gis.yakimawa.gov/arcgis101/rest/services/General/YakimaLayers/MapServer/9",{
           outFields: ["*"]
