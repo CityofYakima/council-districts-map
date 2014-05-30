@@ -33,7 +33,7 @@
         dom, 
         on
       ) {             
-        "use strict"
+        "use strict";
         
         // Create map
         var map = BootstrapMap.create("mapDiv",{
@@ -67,7 +67,7 @@
         //construct ArcGISDynamicMapServiceLayer with imageParameters from above
         var districts = new ArcGISDynamicMapServiceLayer("https://gis.yakimawa.gov/arcgis101/rest/services/General/YakimaLayers/MapServer",{
           "imageParameters": imageParameters,
-          opacity:.5
+          opacity: 0.5
         });
         map.addLayer(districts);
         
@@ -108,7 +108,7 @@
           singleLineFieldName: "Street",
           placeholder: "Find An Address",
           searchExtent: initExtent,
-  		    outFields: ["*"]
+          outFields: ["*"]
         }];
         
         var geocoder = new Geocoder({
@@ -145,7 +145,7 @@
             clearFindGraphics();
             // Objects for the graphic
             var symbol = sym;
-            var goodResults = new Array;
+            var goodResults = new Array([]);
             
             // Create and add graphics with pop-ups
             for (var i = 0; i < places.length; i++) {
